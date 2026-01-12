@@ -1,0 +1,38 @@
+{
+  "name": "cognitwin",
+  "version": "1.0.0",
+  "description": "Digital Business Twin Platform",
+  "private": true,
+  "workspaces": [
+    "backend/*",
+    "backend/services/*",
+    "backend/connectors/*",
+    "frontend/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:services\"",
+    "dev:gateway": "cd backend/api-gateway && npm run dev",
+    "dev:services": "echo 'Start individual services'",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "migrate": "cd database && npm run migrate",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
