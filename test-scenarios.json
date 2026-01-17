@@ -1,0 +1,204 @@
+{
+  "scenarios": {
+    "price_increase_moderate": {
+      "name": "Moderate Price Increase (15%)",
+      "description": "Test council decision on 15% price increase across all tiers",
+      "metric": "revenue",
+      "assumptions": {
+        "price_increase": 0.15,
+        "expected_churn_increase": 0.08,
+        "customer_acquisition_impact": -0.05
+      },
+      "expected_outcome": "approve_conditional",
+      "councils_to_test": ["balanced_growth", "startup_aggressive", "enterprise_conservative"]
+    },
+
+    "price_increase_aggressive": {
+      "name": "Aggressive Price Increase (30%)",
+      "description": "High-risk price increase to boost margins",
+      "metric": "revenue",
+      "assumptions": {
+        "price_increase": 0.30,
+        "expected_churn_increase": 0.20,
+        "customer_acquisition_impact": -0.15,
+        "competitive_risk": 0.35
+      },
+      "expected_outcome": "needs_modification",
+      "councils_to_test": ["balanced_growth", "enterprise_conservative"]
+    },
+
+    "expansion_new_market": {
+      "name": "Geographic Expansion",
+      "description": "Expand to 3 new markets with localization",
+      "metric": "revenue",
+      "assumptions": {
+        "market_expansion_cost": 500000,
+        "expected_revenue_increase": 0.40,
+        "time_to_break_even_months": 8,
+        "operational_complexity_increase": 0.25
+      },
+      "expected_outcome": "approve",
+      "councils_to_test": ["startup_aggressive", "balanced_growth"]
+    },
+
+    "product_launch": {
+      "name": "New Premium Tier Launch",
+      "description": "Launch enterprise tier at 3x current price",
+      "metric": "revenue",
+      "assumptions": {
+        "new_product_revenue_contribution": 0.35,
+        "development_cost": 250000,
+        "cannibalization_risk": 0.10,
+        "customer_upgrade_rate": 0.15
+      },
+      "expected_outcome": "approve_conditional",
+      "councils_to_test": ["balanced_growth", "startup_aggressive"]
+    },
+
+    "cost_cutting_initiative": {
+      "name": "Operational Efficiency Drive",
+      "description": "Reduce operational costs by 20% through automation",
+      "metric": "revenue",
+      "assumptions": {
+        "operational_cost_reduction": 0.20,
+        "automation_investment": 150000,
+        "headcount_reduction": -0.10,
+        "service_quality_risk": 0.08
+      },
+      "expected_outcome": "approve",
+      "councils_to_test": ["enterprise_conservative", "balanced_growth"]
+    },
+
+    "marketing_blitz": {
+      "name": "Aggressive Marketing Campaign",
+      "description": "3-month concentrated marketing push",
+      "metric": "customers",
+      "assumptions": {
+        "marketing_spend_increase": 0.80,
+        "customer_acquisition_boost": 0.45,
+        "customer_acquisition_cost_increase": 0.25,
+        "brand_awareness_lift": 0.60
+      },
+      "expected_outcome": "needs_modification",
+      "councils_to_test": ["startup_aggressive", "balanced_growth"]
+    },
+
+    "defensive_strategy": {
+      "name": "Competitor Response Strategy",
+      "description": "Match competitor pricing and feature set",
+      "metric": "revenue",
+      "assumptions": {
+        "price_decrease": -0.15,
+        "customer_retention_improvement": 0.20,
+        "feature_development_cost": 180000,
+        "market_share_protection": 0.25
+      },
+      "expected_outcome": "approve_conditional",
+      "councils_to_test": ["enterprise_conservative", "balanced_growth"]
+    },
+
+    "saas_optimization": {
+      "name": "SaaS Metrics Optimization",
+      "description": "Focus on improving unit economics",
+      "metric": "mrr",
+      "assumptions": {
+        "churn_reduction": 0.25,
+        "expansion_revenue_increase": 0.30,
+        "customer_acquisition_cost_reduction": 0.15,
+        "net_revenue_retention_improvement": 0.12
+      },
+      "expected_outcome": "approve",
+      "councils_to_test": ["balanced_growth", "startup_aggressive", "enterprise_conservative"]
+    },
+
+    "crisis_response": {
+      "name": "Economic Downturn Response",
+      "description": "Adapt strategy for recession",
+      "metric": "revenue",
+      "assumptions": {
+        "market_contraction": -0.25,
+        "price_elasticity_increase": 0.40,
+        "cost_reduction_target": 0.30,
+        "cash_preservation_priority": 0.90
+      },
+      "expected_outcome": "needs_modification",
+      "councils_to_test": ["enterprise_conservative", "balanced_growth"]
+    },
+
+    "hyper_growth": {
+      "name": "Series B Hyper-Growth Push",
+      "description": "Aggressive growth post-fundraise",
+      "metric": "revenue",
+      "assumptions": {
+        "customer_acquisition_boost": 1.00,
+        "sales_team_expansion": 0.60,
+        "marketing_spend_increase": 1.20,
+        "burn_rate_acceptable": true,
+        "market_leadership_target": 0.80
+      },
+      "expected_outcome": "approve",
+      "councils_to_test": ["startup_aggressive"]
+    }
+  },
+
+  "business_profiles": {
+    "startup_saas": {
+      "name": "Early-Stage SaaS Startup",
+      "description": "$10K MRR, 150 customers, high growth",
+      "metrics": ["revenue", "customers", "churn_rate", "mrr"],
+      "typical_scenarios": ["price_increase_moderate", "product_launch", "marketing_blitz", "saas_optimization"]
+    },
+
+    "ecommerce": {
+      "name": "Mid-Market E-commerce",
+      "description": "$250K monthly revenue, 5000 customers",
+      "metrics": ["revenue", "customers", "orders", "avg_order_value"],
+      "typical_scenarios": ["expansion_new_market", "marketing_blitz", "defensive_strategy"]
+    },
+
+    "enterprise_b2b": {
+      "name": "Enterprise B2B Software",
+      "description": "$500K monthly revenue, 45 enterprise clients",
+      "metrics": ["revenue", "customers", "pipeline_value", "deal_size"],
+      "typical_scenarios": ["price_increase_moderate", "product_launch", "cost_cutting_initiative"]
+    },
+
+    "restaurant": {
+      "name": "Restaurant Chain",
+      "description": "$45K monthly revenue per location",
+      "metrics": ["revenue", "customers", "avg_check", "table_turns"],
+      "typical_scenarios": ["cost_cutting_initiative", "defensive_strategy", "crisis_response"]
+    },
+
+    "agency": {
+      "name": "Digital Marketing Agency",
+      "description": "$120K monthly revenue, 25 clients",
+      "metrics": ["revenue", "clients", "project_value", "utilization_rate"],
+      "typical_scenarios": ["expansion_new_market", "cost_cutting_initiative", "saas_optimization"]
+    }
+  },
+
+  "quick_tests": [
+    {
+      "name": "Optimistic Growth Test",
+      "profile": "startup_saas",
+      "scenario": "product_launch",
+      "expected_agents_approve": ["analyst", "strategist", "ceo"],
+      "expected_agents_concern": ["risk-officer"]
+    },
+    {
+      "name": "Conservative Decision Test",
+      "profile": "enterprise_b2b",
+      "scenario": "price_increase_aggressive",
+      "expected_agents_approve": [],
+      "expected_agents_concern": ["risk-officer", "cfo", "analyst"]
+    },
+    {
+      "name": "Crisis Management Test",
+      "profile": "restaurant",
+      "scenario": "crisis_response",
+      "expected_agents_approve": ["operator", "cfo"],
+      "expected_agents_concern": ["strategist"]
+    }
+  ]
+}

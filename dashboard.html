@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniTwin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <div class="gradient-bg text-white p-6 shadow-lg">
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-3xl font-bold">🧠 CogniTwin Dashboard</h1>
+            <p class="text-white/80 mt-2">AI-Powered Business Intelligence & Forecasting</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <!-- Service Status Cards -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Forecasting Service</p>
+                        <p class="text-2xl font-bold mt-1" id="forecast-status">Checking...</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                        <span class="text-2xl">📊</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">LLM Council</p>
+                        <p class="text-2xl font-bold mt-1" id="council-status">Checking...</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span class="text-2xl">🤖</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Business Profiles</p>
+                        <p class="text-2xl font-bold mt-1" id="profile-count">5</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                        <span class="text-2xl">🏢</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Tabs -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6" aria-label="Tabs">
+                    <button onclick="showTab('data')" class="tab-btn border-b-2 border-purple-500 py-4 px-1 text-sm font-medium text-purple-600">
+                        📊 Generate Data
+                    </button>
+                    <button onclick="showTab('forecast')" class="tab-btn border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        🔮 Forecast
+                    </button>
+                    <button onclick="showTab('council')" class="tab-btn border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                        🧠 AI Council
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Data Generation Tab -->
+                <div id="tab-data" class="tab-content">
+                    <h2 class="text-xl font-bold mb-4">Generate Dummy Business Data</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Profile</label>
+                            <select id="data-profile" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="startup_saas">🚀 SaaS Startup ($10K/mo)</option>
+                                <option value="ecommerce">🛒 E-commerce ($250K/mo)</option>
+                                <option value="enterprise_b2b">🏢 Enterprise B2B ($500K/mo)</option>
+                                <option value="restaurant">🍽️ Restaurant ($45K/mo)</option>
+                                <option value="agency">💼 Agency ($120K/mo)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Metric</label>
+                            <select id="data-metric" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                                <option value="revenue">💰 Revenue</option>
+                                <option value="customers">👥 Customers</option>
+                                <option value="churn_rate">📉 Churn Rate</option>
+                                <option value="mrr">💵 MRR</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Days of History</label>
+                            <input type="number" id="data-days" value="90" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Options</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="data-seasonality" checked class="mr-2">
+                                    <span class="text-sm">Include Seasonality</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="data-trend" class="mr-2">
+                                    <span class="text-sm">Mid-Period Trend Change</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="generateData()" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 font-medium">
+                        Generate Data
+                    </button>
+
+                    <div id="data-result" class="mt-6 hidden">
+                        <h3 class="font-bold text-lg mb-4">Generated Data Summary</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <canvas id="dataChart" height="80"></canvas>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 mt-4">
+                            <div class="bg-blue-50 p-4 rounded">
+                                <p class="text-sm text-gray-600">First Value</p>
+                                <p class="text-xl font-bold" id="first-value">-</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded">
+                                <p class="text-sm text-gray-600">Last Value</p>
+                                <p class="text-xl font-bold" id="last-value">-</p>
+                            </div>
+                            <div class="bg-purple-50 p-4 rounded">
+                                <p class="text-sm text-gray-600">Growth</p>
+                                <p class="text-xl font-bold" id="growth-value">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forecast Tab -->
+                <div id="tab-forecast" class="tab-content hidden">
+                    <h2 class="text-xl font-bold mb-4">ML Forecast with Dummy Data</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Business Profile</label>
+                            <select id="forecast-profile" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="startup_saas">🚀 SaaS Startup</option>
+                                <option value="ecommerce">🛒 E-commerce</option>
+                                <option value="enterprise_b2b">🏢 Enterprise B2B</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Historical Days</label>
+                            <input type="number" id="forecast-history" value="90" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Forecast Days</label>
+                            <input type="number" id="forecast-days" value="30" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                    </div>
+
+                    <button onclick="runForecast()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium">
+                        🔮 Run Forecast
+                    </button>
+
+                    <div id="forecast-loading" class="mt-6 hidden text-center">
+                        <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+                        <p class="mt-2 text-gray-600">Training ML models...</p>
+                    </div>
+
+                    <div id="forecast-result" class="mt-6 hidden">
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div class="bg-white border-2 border-blue-200 p-4 rounded-lg">
+                                <p class="text-sm text-gray-600">Model Type</p>
+                                <p class="text-lg font-bold" id="model-type">-</p>
+                            </div>
+                            <div class="bg-white border-2 border-green-200 p-4 rounded-lg">
+                                <p class="text-sm text-gray-600">Accuracy</p>
+                                <p class="text-lg font-bold" id="model-accuracy">-</p>
+                            </div>
+                            <div class="bg-white border-2 border-purple-200 p-4 rounded-lg">
+                                <p class="text-sm text-gray-600">Trend</p>
+                                <p class="text-lg font-bold" id="forecast-trend">-</p>
+                            </div>
+                        </div>
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- AI Council Tab -->
+                <div id="tab-council" class="tab-content hidden">
+                    <h2 class="text-xl font-bold mb-4">AI Council Simulation</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Council Type</label>
+                            <select id="council-preset" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="balanced_growth">⚖️ Balanced Growth</option>
+                                <option value="startup_aggressive">🚀 Startup Aggressive</option>
+                                <option value="enterprise_conservative">🏢 Enterprise Conservative</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Scenario</label>
+                            <input type="text" id="scenario-name" value="Price Increase Test" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price Increase (%)</label>
+                            <input type="number" id="price-increase" value="15" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+
+                        <div>
+                            <label class="flex items-center h-full pt-8">
+                                <input type="checkbox" id="enable-debate" checked class="mr-2">
+                                <span class="text-sm font-medium">Enable Agent Debate View</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button onclick="runCouncil()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 font-medium">
+                        🧠 Run AI Council
+                    </button>
+
+                    <div id="council-loading" class="mt-6 hidden text-center">
+                        <div class="animate-spin inline-block w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+                        <p class="mt-2 text-gray-600">AI agents deliberating...</p>
+                    </div>
+
+                    <div id="council-result" class="mt-6 hidden">
+                        <div class="bg-gradient-to-r from-purple-50 to-blue-50 border-2 border-purple-200 p-6 rounded-lg mb-4">
+                            <h3 class="font-bold text-lg mb-2">Final Decision</h3>
+                            <p class="text-3xl font-bold mb-2" id="decision-outcome">-</p>
+                            <p class="text-gray-700" id="decision-reasoning">-</p>
+                        </div>
+
+                        <div id="agent-votes" class="grid grid-cols-5 gap-2 mb-4"></div>
+
+                        <div id="debate-conversation" class="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        const COUNCIL_BASE = 'http://localhost:4000';
+
+        // Check service health on load
+        async function checkServices() {
+            try {
+                const forecastRes = await fetch(`${API_BASE}/health`);
+                document.getElementById('forecast-status').textContent = forecastRes.ok ? '✅ Online' : '❌ Offline';
+            } catch (e) {
+                document.getElementById('forecast-status').textContent = '❌ Offline';
+            }
+
+            try {
+                const councilRes = await fetch(`${COUNCIL_BASE}/health`);
+                document.getElementById('council-status').textContent = councilRes.ok ? '✅ Online' : '❌ Offline';
+            } catch (e) {
+                document.getElementById('council-status').textContent = '❌ Offline';
+            }
+        }
+
+        checkServices();
+
+        // Tab switching
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-purple-500', 'text-purple-600');
+                el.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            event.target.classList.add('border-purple-500', 'text-purple-600');
+            event.target.classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        // Generate Data
+        async function generateData() {
+            const profile = document.getElementById('data-profile').value;
+            const metric = document.getElementById('data-metric').value;
+            const days = document.getElementById('data-days').value;
+            const seasonality = document.getElementById('data-seasonality').checked;
+            const trendChange = document.getElementById('data-trend').checked;
+
+            try {
+                const res = await fetch(`${API_BASE}/dummy/data/${profile}/${metric}?days=${days}&seasonality=${seasonality}&trend_change=${trendChange}`);
+                const data = await res.json();
+
+                // Show results
+                document.getElementById('data-result').classList.remove('hidden');
+                document.getElementById('first-value').textContent = `$${data.summary.first_value.toLocaleString()}`;
+                document.getElementById('last-value').textContent = `$${data.summary.last_value.toLocaleString()}`;
+                document.getElementById('growth-value').textContent = `${data.summary.growth.toFixed(1)}%`;
+
+                // Draw chart
+                const ctx = document.getElementById('dataChart').getContext('2d');
+                if (window.dataChartInstance) window.dataChartInstance.destroy();
+
+                window.dataChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.data.map(d => d.date),
+                        datasets: [{
+                            label: metric.toUpperCase(),
+                            data: data.data.map(d => d.value),
+                            borderColor: 'rgb(147, 51, 234)',
+                            backgroundColor: 'rgba(147, 51, 234, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+            } catch (e) {
+                alert('Error generating data: ' + e.message);
+            }
+        }
+
+        // Run Forecast
+        async function runForecast() {
+            const profile = document.getElementById('forecast-profile').value;
+            const history = document.getElementById('forecast-history').value;
+            const days = document.getElementById('forecast-days').value;
+
+            document.getElementById('forecast-loading').classList.remove('hidden');
+            document.getElementById('forecast-result').classList.add('hidden');
+
+            try {
+                const res = await fetch(`${API_BASE}/dummy/forecast/${profile}/revenue?days_historical=${history}&days_forecast=${days}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                document.getElementById('forecast-loading').classList.add('hidden');
+                document.getElementById('forecast-result').classList.remove('hidden');
+
+                document.getElementById('model-type').textContent = data.training.model_type;
+                document.getElementById('model-accuracy').textContent = `${(data.training.metrics.statistical_metrics.accuracy || 0).toFixed(1)}%`;
+                document.getElementById('forecast-trend').textContent = data.forecast.trend;
+
+                // Draw forecast chart
+                const ctx = document.getElementById('forecastChart').getContext('2d');
+                if (window.forecastChartInstance) window.forecastChartInstance.destroy();
+
+                window.forecastChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.forecast.predictions.map(d => d.date),
+                        datasets: [{
+                            label: 'Forecast',
+                            data: data.forecast.predictions.map(d => d.forecast),
+                            borderColor: 'rgb(59, 130, 246)',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true
+                        }, {
+                            label: 'Upper Bound',
+                            data: data.forecast.predictions.map(d => d.upper_bound),
+                            borderColor: 'rgba(59, 130, 246, 0.3)',
+                            borderDash: [5, 5],
+                            fill: false
+                        }, {
+                            label: 'Lower Bound',
+                            data: data.forecast.predictions.map(d => d.lower_bound),
+                            borderColor: 'rgba(59, 130, 246, 0.3)',
+                            borderDash: [5, 5],
+                            fill: false
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: true } } }
+                });
+            } catch (e) {
+                document.getElementById('forecast-loading').classList.add('hidden');
+                alert('Error running forecast: ' + e.message);
+            }
+        }
+
+        // Run AI Council
+        async function runCouncil() {
+            const preset = document.getElementById('council-preset').value;
+            const scenario = document.getElementById('scenario-name').value;
+            const priceIncrease = parseFloat(document.getElementById('price-increase').value) / 100;
+            const debate = document.getElementById('enable-debate').checked;
+
+            document.getElementById('council-loading').classList.remove('hidden');
+            document.getElementById('council-result').classList.add('hidden');
+
+            try {
+                const res = await fetch(`${COUNCIL_BASE}/council/simulate/preset?debate=${debate}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Tenant-ID': 'demo_user'
+                    },
+                    body: JSON.stringify({
+                        presetId: preset,
+                        scenarioName: scenario,
+                        metric: 'revenue',
+                        assumptions: { price_increase: priceIncrease }
+                    })
+                });
+                const data = await res.json();
+
+                document.getElementById('council-loading').classList.add('hidden');
+                document.getElementById('council-result').classList.remove('hidden');
+
+                const decision = data.finalDecision || data.decision || {};
+                document.getElementById('decision-outcome').textContent = decision.outcome || 'Unknown';
+                document.getElementById('decision-reasoning').textContent = decision.reasoning || 'No reasoning provided';
+
+                // Show agent votes
+                const votesDiv = document.getElementById('agent-votes');
+                votesDiv.innerHTML = (data.agentDecisions || []).map(agent => `
+                    <div class="bg-white border-2 ${agent.decision === 'approve' ? 'border-green-500' : 'border-red-500'} p-3 rounded text-center">
+                        <p class="text-xs font-medium">${agent.agent}</p>
+                        <p class="text-lg">${agent.decision === 'approve' ? '✅' : '❌'}</p>
+                    </div>
+                `).join('');
+
+                // Show debate if available
+                if (data.debate) {
+                    const debateDiv = document.getElementById('debate-conversation');
+                    debateDiv.innerHTML = '<h4 class="font-bold mb-2">Agent Conversation:</h4>' +
+                        (data.debate.rounds || []).map(round =>
+                            (round.messages || []).map(msg => `
+                                <div class="mb-2 p-2 bg-white rounded border-l-4 border-blue-500">
+                                    <p class="text-xs text-gray-500">${msg.from} → ${msg.to}</p>
+                                    <p class="text-sm">${msg.content}</p>
+                                </div>
+                            `).join('')
+                        ).join('');
+                }
+            } catch (e) {
+                document.getElementById('council-loading').classList.add('hidden');
+                alert('Error running council: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>

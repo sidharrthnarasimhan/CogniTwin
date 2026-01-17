@@ -127,55 +127,46 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0D1117]">
       <DashboardNav />
 
       {/* Main Content */}
-      <main className="p-6 max-w-[1600px] mx-auto">
+      <main className="py-12 px-8 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, Sidharrth</h1>
-          <p className="text-muted-foreground">Here's what's happening with your business today</p>
+        <div className="mb-12">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">Your business metrics at a glance</p>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {kpis.map((kpi, i) => (
-            <motion.div
+            <div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="p-6 bg-card border border-border rounded-xl hover:border-primary/50 transition-all"
+              className="p-6 bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-lg"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 bg-gradient-to-br ${kpi.color} rounded-lg flex items-center justify-center`}>
-                  <kpi.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className={`flex items-center gap-1 text-sm font-medium ${kpi.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
-                  {kpi.trend === 'up' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{kpi.title}</span>
+                <span className={`text-xs font-medium ${
+                  kpi.trend === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                }`}>
                   {kpi.change}
-                </div>
+                </span>
               </div>
-              <div className="text-sm text-muted-foreground mb-1">{kpi.title}</div>
-              <div className="text-2xl font-bold">{kpi.value}</div>
-            </motion.div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">{kpi.value}</div>
+            </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Revenue Chart */}
-          <div className="lg:col-span-2 p-6 bg-card border border-border rounded-xl">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold mb-1">Revenue Forecast</h2>
-                <p className="text-sm text-muted-foreground">Actual vs Predicted (30 days)</p>
-              </div>
-              <button className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                New Scenario
-              </button>
-            </div>
+        {/* Main Chart */}
+        <div className="mb-8 p-8 bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Revenue Forecast</h2>
+            <button className="px-4 py-2 bg-[#0052CC] hover:bg-[#0747A6] text-white rounded-md text-sm font-medium transition-colors">
+              New Scenario
+            </button>
+          </div>
+          <div>
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={revenueData}>
                 <defs>
@@ -226,56 +217,13 @@ export default function Dashboard() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-
-          {/* AI Insights Panel */}
-          <div className="p-6 bg-gradient-to-br from-primary/5 via-purple-500/5 to-pink-500/5 border border-border rounded-xl">
-            <div className="flex items-center gap-2 mb-6">
-              <Sparkles className="w-5 h-5 text-primary" />
-              <h2 className="text-xl font-semibold">AI Council Insights</h2>
-            </div>
-            <div className="space-y-4">
-              {insights.slice(0, 2).map((insight, i) => (
-                <div
-                  key={i}
-                  className="p-4 bg-card/50 border border-border rounded-lg hover:border-primary/50 transition-all cursor-pointer"
-                >
-                  <div className="flex items-start gap-3 mb-2">
-                    {insight.type === 'opportunity' ? (
-                      <Zap className="w-5 h-5 text-green-500 mt-0.5" />
-                    ) : insight.type === 'risk' ? (
-                      <AlertCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                    ) : (
-                      <CheckCircle2 className="w-5 h-5 text-blue-500 mt-0.5" />
-                    )}
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm mb-1">{insight.title}</div>
-                      <div className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                        {insight.description}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="text-muted-foreground">Confidence:</span>
-                        <span className="font-medium text-primary">{(insight.confidence * 100).toFixed(0)}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button className="w-full mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
-              View All Insights
-            </button>
-          </div>
         </div>
 
-        {/* Scenarios */}
-        <div className="mt-6 p-6 bg-card border border-border rounded-xl">
+        {/* Recent Activity */}
+        <div className="p-8 bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-lg">
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">Recent Scenarios</h2>
-              <p className="text-sm text-muted-foreground">Test what-if scenarios on your business</p>
-            </div>
-            <button className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium hover:bg-secondary/80 transition-colors flex items-center gap-2">
-              <Target className="w-4 h-4" />
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Recent Scenarios</h2>
+            <button className="px-4 py-2 bg-[#0052CC] hover:bg-[#0747A6] text-white rounded-md text-sm font-medium transition-colors">
               Create Scenario
             </button>
           </div>
@@ -283,33 +231,26 @@ export default function Dashboard() {
             {scenarios.map((scenario, i) => (
               <div
                 key={i}
-                className="p-4 bg-muted/30 border border-border rounded-lg flex items-center justify-between hover:border-primary/50 transition-all cursor-pointer"
+                className="p-4 bg-gray-50 dark:bg-[#0D1117] border border-gray-200 dark:border-gray-800 rounded-lg hover:border-[#0052CC] transition-colors"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                    <Target className="w-5 h-5 text-white" />
-                  </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-semibold mb-1">{scenario.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {Object.entries(scenario.impact).map(([key, value], j) => (
-                        <span key={j} className="mr-4">
-                          {key}: <span className="font-medium text-foreground">{value}</span>
+                    <div className="font-medium text-gray-900 dark:text-white mb-1">{scenario.name}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {Object.entries(scenario.impact).slice(0, 2).map(([key, value], j) => (
+                        <span key={j} className="mr-3">
+                          {key}: <span className="font-medium">{value}</span>
                         </span>
                       ))}
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  {scenario.confidence && (
-                    <div className="text-sm">
-                      <span className="text-muted-foreground">Confidence: </span>
-                      <span className="font-medium text-primary">{(scenario.confidence * 100).toFixed(0)}%</span>
-                    </div>
-                  )}
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${scenario.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'}`}>
+                  <span className={`px-3 py-1 rounded-md text-xs font-medium ${
+                    scenario.status === 'completed'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                      : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                  }`}>
                     {scenario.status}
-                  </div>
+                  </span>
                 </div>
               </div>
             ))}

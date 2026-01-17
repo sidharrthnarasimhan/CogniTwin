@@ -20,6 +20,7 @@ except Exception as e:
 
 from models.statistical_forecaster import StatisticalForecaster, EnsembleForecaster
 from utils import fetch_historical_data_from_db, validate_historical_data
+from utils.dummy_data_generator import DummyDataGenerator, get_sample_revenue_data, get_test_scenario
 
 # Check LSTM availability
 try:
@@ -283,6 +284,145 @@ async def generate_forecast(
     except Exception as e:
         logger.error(f"Forecast generation failed: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Forecast generation failed: {str(e)}")
+
+# ========================================
+# DUMMY DATA ENDPOINTS FOR TESTING
+# ========================================
+
+@app.get("/dummy/profiles")
+async def get_dummy_profiles():
+    """Get list of available business profiles for testing"""
+    return {
+        "profiles": list(DummyDataGenerator.BUSINESS_PROFILES.keys()),
+        "details": {
+            profile: {
+                "metrics": list(config.keys()),
+                "base_values": {metric: params['base'] for metric, params in config.items()}
+            }
+            for profile, config in DummyDataGenerator.BUSINESS_PROFILES.items()
+        }
+    }
+
+@app.get("/dummy/data/{profile}/{metric}")
+async def get_dummy_data(
+    profile: str,
+    metric: str,
+    days: int = 90,
+    seasonality: bool = True,
+    trend_change: bool = False
+):
+    """
+    Generate dummy historical data for testing
+
+    Args:
+        profile: Business profile (startup_saas, ecommerce, etc.)
+        metric: Metric name (revenue, customers, etc.)
+        days: Number of days of historical data
+        seasonality: Include weekly/monthly seasonality
+        trend_change: Include mid-period trend shift
+    """
+    try:
+        generator = DummyDataGenerator(profile)
+        data = generator.generate_metric_data(
+            metric,
+            days_back=days,
+            seasonality=seasonality,
+            trend_change=trend_change
+        )
+
+        return {
+            "profile": profile,
+            "metric": metric,
+            "days": days,
+            "data": data,
+            "summary": {
+                "first_value": data[0]['value'],
+                "last_value": data[-1]['value'],
+                "growth": ((data[-1]['value'] - data[0]['value']) / data[0]['value'] * 100),
+                "avg_value": sum(d['value'] for d in data) / len(data)
+            }
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/dummy/scenarios")
+async def get_test_scenarios():
+    """Get predefined test scenarios"""
+    scenarios = {
+        'optimistic': get_test_scenario('optimistic'),
+        'realistic': get_test_scenario('realistic'),
+        'pessimistic': get_test_scenario('pessimistic'),
+        'aggressive_growth': get_test_scenario('aggressive_growth'),
+        'cost_cutting': get_test_scenario('cost_cutting')
+    }
+
+    return {"scenarios": scenarios}
+
+@app.post("/dummy/forecast/{profile}/{metric}")
+async def forecast_with_dummy_data(
+    profile: str,
+    metric: str,
+    days_historical: int = 90,
+    days_forecast: int = 30,
+    use_ensemble: bool = True
+):
+    """
+    Run a complete forecast using dummy data - perfect for testing!
+
+    Args:
+        profile: Business profile
+        metric: Metric to forecast
+        days_historical: Days of historical data to generate
+        days_forecast: Days to forecast forward
+        use_ensemble: Use ensemble model
+    """
+    try:
+        # Generate dummy historical data
+        generator = DummyDataGenerator(profile)
+        historical_data = generator.generate_metric_data(metric, days_back=days_historical)
+
+        logger.info(f"Generated {len(historical_data)} days of dummy data for {profile}/{metric}")
+
+        # Initialize forecaster
+        if use_ensemble and LSTM_AVAILABLE:
+            forecaster = EnsembleForecaster(statistical_weight=0.6, lstm_weight=0.4)
+            model_type = "Statistical + LSTM Ensemble"
+        else:
+            forecaster = StatisticalForecaster()
+            model_type = "Statistical"
+
+        # Train model
+        start_time = datetime.now()
+        if isinstance(forecaster, EnsembleForecaster):
+            training_result = forecaster.train(historical_data, metric, use_lstm=LSTM_AVAILABLE)
+        else:
+            training_result = forecaster.train(historical_data, metric)
+        training_duration = (datetime.now() - start_time).total_seconds()
+
+        # Generate forecast
+        forecast_result = forecaster.forecast(days_forecast)
+
+        return {
+            "test_data": {
+                "profile": profile,
+                "metric": metric,
+                "historical_days": days_historical,
+                "forecast_days": days_forecast
+            },
+            "training": {
+                "model_type": model_type,
+                "duration_seconds": round(training_duration, 2),
+                "metrics": training_result
+            },
+            "forecast": forecast_result,
+            "note": "This forecast used generated dummy data - perfect for testing without real data!"
+        }
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Dummy forecast failed: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn

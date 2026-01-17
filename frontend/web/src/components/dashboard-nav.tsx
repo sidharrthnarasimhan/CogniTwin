@@ -2,60 +2,64 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Brain, Sparkles, Settings, Bell, Search } from 'lucide-react'
-import { ThemeToggle } from './theme-toggle'
+import { Brain, Sparkles, Settings, Bell, Search, Database, ChevronDown } from 'lucide-react'
 
 export function DashboardNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
+    <nav className="sticky top-0 z-50 bg-white dark:bg-[#0A0E27] border-b border-gray-200 dark:border-gray-800">
+      <div className="max-w-[1400px] mx-auto px-6">
+        <div className="flex items-center justify-between h-16">
+          {/* Left section */}
+          <div className="flex items-center gap-10">
+            <Link href="/dashboard" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#0052CC] to-[#0065FF] rounded-md flex items-center justify-center">
+                <Brain className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold">CogniTwin</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-[#0052CC] to-[#0065FF] bg-clip-text text-transparent">
+                CogniTwin
+              </span>
             </Link>
-            <div className="hidden md:flex items-center gap-6">
+
+            <div className="hidden lg:flex items-center gap-1">
               <Link
                 href="/dashboard"
-                className={`text-sm font-medium transition-colors ${
-                  pathname === '/dashboard' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 Overview
               </Link>
               <Link
-                href="/dashboard/forecasts"
-                className={`text-sm font-medium transition-colors ${
-                  pathname === '/dashboard/forecasts' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                href="/dashboard/test-data"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  pathname === '/dashboard/test-data'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
-                Forecasts
-              </Link>
-              <Link
-                href="/dashboard/scenarios"
-                className={`text-sm font-medium transition-colors ${
-                  pathname === '/dashboard/scenarios' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                Scenarios
+                <Database className="w-4 h-4" />
+                Playground
               </Link>
               <Link
                 href="/dashboard/insights"
-                className={`text-sm font-medium transition-colors ${
-                  pathname === '/dashboard/insights' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard/insights'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 Insights
               </Link>
               <Link
                 href="/dashboard/ask"
-                className={`text-sm font-medium transition-colors flex items-center gap-1 ${
-                  pathname === '/dashboard/ask' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  pathname === '/dashboard/ask'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
                 <Sparkles className="w-4 h-4" />
@@ -63,21 +67,25 @@ export function DashboardNav() {
               </Link>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-muted rounded-lg transition-colors">
-              <Search className="w-5 h-5 text-muted-foreground" />
+
+          {/* Right section */}
+          <div className="flex items-center gap-2">
+            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+              <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
-            <button className="p-2 hover:bg-muted rounded-lg transition-colors relative">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors relative">
+              <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF5630] rounded-full" />
             </button>
-            <ThemeToggle />
-            <button className="p-2 hover:bg-muted rounded-lg transition-colors">
-              <Settings className="w-5 h-5 text-muted-foreground" />
+            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+              <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-              SN
-            </div>
+            <button className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+              <div className="w-8 h-8 bg-gradient-to-br from-[#0052CC] to-[#0065FF] rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                SN
+              </div>
+              <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            </button>
           </div>
         </div>
       </div>
