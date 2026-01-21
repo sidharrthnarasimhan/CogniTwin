@@ -219,6 +219,105 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* 4 Core Features Grid */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* AI Forecasting */}
+          <div className="p-8 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 dark:bg-gradient-to-br dark:from-blue-500/5 dark:to-cyan-500/5 border border-blue-500/20 rounded-lg hover:border-blue-500/50 transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">AI Forecasting</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Prophet + LSTM models</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Predict revenue, demand, churn with 85-90% accuracy
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="font-semibold text-green-600 dark:text-green-400">87.3%</span> accuracy
+              </div>
+              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors">
+                View Forecasts
+              </button>
+            </div>
+          </div>
+
+          {/* Anomaly Detection */}
+          <div className="p-8 bg-gradient-to-br from-orange-500/10 to-red-500/10 dark:bg-gradient-to-br dark:from-orange-500/5 dark:to-red-500/5 border border-orange-500/20 rounded-lg hover:border-orange-500/50 transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Anomaly Detection</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Real-time alerts</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Isolation Forest + industry thresholds catch issues early
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="font-semibold text-orange-600 dark:text-orange-400">3</span> active alerts
+              </div>
+              <button className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md text-sm font-medium transition-colors">
+                View Alerts
+              </button>
+            </div>
+          </div>
+
+          {/* Cognitive Agents */}
+          <div className="p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 dark:bg-gradient-to-br dark:from-purple-500/5 dark:to-pink-500/5 border border-purple-500/20 rounded-lg hover:border-purple-500/50 transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">AI Council</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">6 specialized agents</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Multi-agent debate system for trustworthy insights
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="font-semibold text-purple-600 dark:text-purple-400">5</span> new insights
+              </div>
+              <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md text-sm font-medium transition-colors">
+                View Insights
+              </button>
+            </div>
+          </div>
+
+          {/* Optimization */}
+          <div className="p-8 bg-gradient-to-br from-green-500/10 to-emerald-500/10 dark:bg-gradient-to-br dark:from-green-500/5 dark:to-emerald-500/5 border border-green-500/20 rounded-lg hover:border-green-500/50 transition-all">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Optimization</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Industry playbooks</p>
+              </div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              300+ rules for inventory, pricing, staffing optimization
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600 dark:text-gray-400">
+                <span className="font-semibold text-green-600 dark:text-green-400">12</span> recommendations
+              </div>
+              <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm font-medium transition-colors">
+                View Playbooks
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Recent Activity */}
         <div className="p-8 bg-white dark:bg-[#161B22] border border-gray-200 dark:border-gray-800 rounded-lg">
           <div className="flex items-center justify-between mb-6">

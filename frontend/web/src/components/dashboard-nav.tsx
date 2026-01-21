@@ -13,7 +13,7 @@ export function DashboardNav() {
         <div className="flex items-center justify-between h-16">
           {/* Left section */}
           <div className="flex items-center gap-10">
-            <Link href="/dashboard" className="flex items-center gap-2.5">
+            <Link href="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
               <div className="w-8 h-8 bg-gradient-to-br from-[#0052CC] to-[#0065FF] rounded-md flex items-center justify-center">
                 <Brain className="w-5 h-5 text-white" />
               </div>
@@ -34,15 +34,44 @@ export function DashboardNav() {
                 Overview
               </Link>
               <Link
-                href="/dashboard/test-data"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  pathname === '/dashboard/test-data'
+                href="/dashboard/forecasts"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard/forecasts'
                     ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
                     : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
-                <Database className="w-4 h-4" />
-                Playground
+                Forecasts
+              </Link>
+              <Link
+                href="/dashboard/anomalies"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard/anomalies'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                Anomalies
+              </Link>
+              <Link
+                href="/dashboard/scenarios"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard/scenarios'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                Scenarios
+              </Link>
+              <Link
+                href="/dashboard/optimization"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  pathname === '/dashboard/optimization'
+                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
+                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
+                }`}
+              >
+                Optimization
               </Link>
               <Link
                 href="/dashboard/insights"
@@ -52,7 +81,7 @@ export function DashboardNav() {
                     : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
                 }`}
               >
-                Insights
+                AI Council
               </Link>
               <Link
                 href="/dashboard/ask"
