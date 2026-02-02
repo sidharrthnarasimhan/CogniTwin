@@ -1,8 +1,17 @@
 import OpenAI from 'openai';
+import { getModelRegistry, ModelMessage } from './model-loader';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'mock-key'
 });
+
+// Flag to enable/disable dynamic model loading
+const USE_DYNAMIC_MODELS = process.env.USE_DYNAMIC_MODELS === 'true';
+
+// Path to council roles configuration
+const COUNCIL_ROLES_PATH = path.join(process.cwd(), '../../frontend/web/config/council-roles.json');
 
 interface AnalysisRequest {
   context: string;
@@ -16,6 +25,37 @@ interface AgentResponse {
   analysis: string;
   confidence: number;
   recommendations: string[];
+}
+
+interface CouncilRole {
+  id: string;
+  title: string;
+  modelId: string | null;
+  enhancedPrompt?: string;
+  prompt: string;
+  personality: Record<string, number>;
+  traits: Array<{
+    name: string;
+    left: string;
+    right: string;
+    description: string;
+  }>;
+}
+
+function loadCouncilRoles(): CouncilRole[] {
+  try {
+    if (fs.existsSync(COUNCIL_ROLES_PATH)) {
+      const data = fs.readFileSync(COUNCIL_ROLES_PATH, 'utf-8');
+      const roles = JSON.parse(data);
+      console.log(`Loaded ${roles.length} council roles with personality configurations`);
+      return roles;
+    }
+  } catch (error) {
+    console.error('Error loading council roles:', error);
+  }
+
+  // Return default roles if config not found
+  return [];
 }
 
 export const getAgentPrompts = () => ({
@@ -44,8 +84,71 @@ Your role is to synthesize inputs from all other agents into cohesive, prioritiz
 Create a clear executive summary with recommended actions.`
 });
 
-async function callAgent(agent: string, prompt: string, context: any): Promise<AgentResponse> {
-  // Mock implementation - in production, would call actual LLM
+async function callAgent(agent: string, prompt: string, context: any, role?: CouncilRole): Promise<AgentResponse> {
+  // Try to use dynamic models with personality-enhanced prompts
+  if (USE_DYNAMIC_MODELS && role) {
+    try {
+      const registry = getModelRegistry();
+
+      // Get role-specific model if assigned, otherwise use default
+      const model = role.modelId
+        ? await registry.getModel(role.modelId)
+        : await registry.getModel();
+
+      if (model) {
+        // Use personality-enhanced prompt if available
+        const agentPrompt = role.enhancedPrompt || role.prompt;
+
+        const messages: ModelMessage[] = [
+          { role: 'system', content: agentPrompt },
+          { role: 'user', content: `Context: ${JSON.stringify(context)}\n\nQuestion: ${prompt}\n\nProvide analysis from your perspective as ${role.title}, considering your personality traits. Include confidence score and recommendations.` }
+        ];
+
+        const response = await model.generate(messages, { temperature: 0.7, maxTokens: 1000 });
+
+        console.log(`${role.title} responded using ${role.modelId || 'default model'} with personality traits`);
+
+        // Parse the response (simplified - in production would be more robust)
+        return {
+          agent,
+          analysis: response,
+          confidence: 0.85, // Would extract from response
+          recommendations: ['Recommendation from AI model'] // Would extract from response
+        };
+      }
+    } catch (error) {
+      console.error(`Error calling dynamic model for ${agent}:`, error);
+      // Fall through to mock responses
+    }
+  } else if (USE_DYNAMIC_MODELS) {
+    // Fallback to old behavior for backward compatibility
+    try {
+      const registry = getModelRegistry();
+      const model = await registry.getModel();
+
+      if (model) {
+        const agentPrompt = getAgentPrompts()[agent as keyof ReturnType<typeof getAgentPrompts>];
+
+        const messages: ModelMessage[] = [
+          { role: 'system', content: agentPrompt },
+          { role: 'user', content: `Context: ${JSON.stringify(context)}\n\nQuestion: ${prompt}\n\nProvide analysis, confidence score (0-1), and recommendations.` }
+        ];
+
+        const response = await model.generate(messages, { temperature: 0.7, maxTokens: 1000 });
+
+        return {
+          agent,
+          analysis: response,
+          confidence: 0.85,
+          recommendations: ['Recommendation from AI model']
+        };
+      }
+    } catch (error) {
+      console.error(`Error calling dynamic model for ${agent}:`, error);
+    }
+  }
+
+  // Mock implementation - fallback when dynamic models not available
   const mockResponses: Record<string, AgentResponse> = {
     analyst: {
       agent: 'analyst',
@@ -122,7 +225,52 @@ export async function analyzeWithCouncil(request: AnalysisRequest) {
 
   console.log(`Council analyzing: ${question}`);
 
-  // Run all agents in parallel (except synthesizer)
+  // Load council roles with personality configurations
+  const councilRoles = loadCouncilRoles();
+
+  if (councilRoles.length > 0) {
+    console.log(`Using ${councilRoles.length} configured council roles with personalities`);
+
+    // Filter out roles that don't have models assigned (optional)
+    const activeRoles = councilRoles.filter(role => role.modelId);
+
+    if (activeRoles.length > 0) {
+      // Run all council members in parallel
+      const agentResults = await Promise.all(
+        activeRoles.map(role =>
+          callAgent(role.id, question, { context, twinState }, role)
+        )
+      );
+
+      // For synthesis, use a designated role or the first one
+      const synthesisRole = activeRoles.find(r => r.id === 'ceo') || activeRoles[0];
+      const synthesis = await callAgent('synthesizer', question, {
+        context,
+        twinState,
+        agentOutputs: agentResults
+      }, synthesisRole);
+
+      return {
+        question,
+        tenant_id: tenantId,
+        timestamp: new Date().toISOString(),
+        agent_responses: agentResults,
+        synthesis: synthesis,
+        overall_confidence: 0.86,
+        processing_time_ms: 1250,
+        personality_enabled: true,
+        roles_used: activeRoles.map(r => ({
+          id: r.id,
+          title: r.title,
+          model: r.modelId,
+          personality: r.personality
+        }))
+      };
+    }
+  }
+
+  // Fallback to old behavior if no council roles configured
+  console.log('No council roles configured, using default agents');
   const agentNames = ['analyst', 'strategist', 'operator', 'risk-officer', 'industry-expert'];
 
   const agentResults = await Promise.all(
@@ -143,6 +291,7 @@ export async function analyzeWithCouncil(request: AnalysisRequest) {
     agent_responses: agentResults,
     synthesis: synthesis,
     overall_confidence: 0.86,
-    processing_time_ms: 1250
+    processing_time_ms: 1250,
+    personality_enabled: false
   };
 }

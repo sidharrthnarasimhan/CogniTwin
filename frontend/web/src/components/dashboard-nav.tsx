@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Brain, Sparkles, Settings, Bell, Search, Database, ChevronDown } from 'lucide-react'
+import { Brain, Settings, Bell, Search, ChevronDown } from 'lucide-react'
 
 export function DashboardNav() {
   const pathname = usePathname()
@@ -83,17 +83,6 @@ export function DashboardNav() {
               >
                 AI Council
               </Link>
-              <Link
-                href="/dashboard/ask"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  pathname === '/dashboard/ask'
-                    ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#0052CC]/5 dark:bg-[#0052CC]/10'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] hover:bg-gray-50 dark:hover:bg-gray-800/50'
-                }`}
-              >
-                <Sparkles className="w-4 h-4" />
-                Ask AI
-              </Link>
             </div>
           </div>
 
@@ -106,9 +95,9 @@ export function DashboardNav() {
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF5630] rounded-full" />
             </button>
-            <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+            <Link href="/dashboard/settings/models" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
               <Settings className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            </button>
+            </Link>
             <button className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
               <div className="w-8 h-8 bg-gradient-to-br from-[#0052CC] to-[#0065FF] rounded-full flex items-center justify-center text-white font-semibold text-sm">
                 SN
